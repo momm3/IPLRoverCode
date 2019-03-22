@@ -15,6 +15,7 @@ const int top_lmt = 53;
 const int zero = 92;
 const int bot_lmt = 121;
 int throttle = zero;
+int incremental = 0;
 const int turn_dur = 1000;  // Milliseconds.
 
 bool s = false;
@@ -52,8 +53,19 @@ void loop(){
   if (irrecv.decode(&results)){
      String code = String(results.value, HEX);
      if (code == halt){
-        // Serial.print("Halting... ");
-        throttle = zero;
+        //New halting code.
+       if (throttle > zero){
+         incremental = ((throttle - zero)/3);
+         for (int i = 0; i<=3 ; i++){
+           throttle -= incremental;
+           delay(500);
+         } else if (throttle < zero){
+         for (int i = 0 ; i<= 3 ; i++){
+           throttle += incremental;
+           delay(500);
+         }
+     }
+       
      } else if (code == increase){
         if (!(throttle < top_lmt)){
           throttle -= 5;
