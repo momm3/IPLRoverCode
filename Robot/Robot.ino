@@ -3,8 +3,8 @@
 
 Servo left_motor;
 Servo right_motor;
-const int left_motor_pin = 3;
-const int right_motor_pin = 10;
+const int left_motor_pin = 52;
+const int right_motor_pin = 53;
 int RECV_PIN = 2;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
