@@ -5,9 +5,12 @@ Servo left_motor;
 Servo right_motor;
 const int left_motor_pin = 52;
 const int right_motor_pin = 53;
+int fanPin = 13;
+int sensorPin = 12;
 int RECV_PIN = 2;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
+
 
 
 // Motor range = 52 - 92 - 122
@@ -41,6 +44,8 @@ void setup(){
   irrecv.enableIRIn();
   left_motor.attach(left_motor_pin);
   right_motor.attach(right_motor_pin);
+  pinMode(fanPin, OUTPUT);
+  analogWrite(fanPin, 0);
 }
 
 void loop(){
@@ -104,25 +109,35 @@ void loop(){
 
      irrecv.resume();
   }
+    
+    // FAN AND TEMPERATURE SENSOR CODE BELOW
+    
+     //getting the voltage reading from the temperature sensor
+    int reading = analogRead(sensorPin);  
+ 
+    // converting that reading to voltage, for 3.3v arduino use 3.3
+    float voltage = reading * 3.3;
+    voltage /= 1024.0; 
+ 
+    // print out the voltage
+    Serial.print(voltage); Serial.println(" volts");
+ 
+    // now print out the temperature
+    float temperatureC = (voltage - 0.5) * 100 ;  //converting from 10 mv per degree wit 500 mV offset
+                                               //to degrees ((voltage - 500mV) times 100)
+    Serial.print(temperatureC); Serial.println(" degrees C");
+ 
+    // now convert to Fahrenheit
+    float temperatureF = (temperatureC * 9.0 / 5.0) + 32.0;
+    Serial.print(temperatureF); Serial.println(" degrees F");
+ 
+    delay(1000);                                     //waiting a second
+    
+    // if statement regarding fan control
+    if (temperatureF > 85.00) {
+      analogWrite(fanPin, 255);
+    }
+    else {
+      analogWrite(fanPin, 1);
+    }
 }
-
-
-// void left_motor(int throttle_per){ //
-//   m1.write(convert_throttle(throttle_per));
-// }
-
-//float convert_throttle(int percent){  // -100 to 100
-//  float value;
-//
-//  if (percent > 0){
-//    value = zero - (percent / 100) * (dir_2 - zero);
-//  }
-//  else if(percent < 0){
-//    value = zero - (percent / 100) * (zero - dir_1);
-//  }
-//  else{
-//    value = zero;
-//  }
-//
-//  return value;
-//}
