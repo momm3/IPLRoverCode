@@ -85,28 +85,27 @@ void loop(){
      left_motor.write(throttle);
      right_motor.write(throttle);
      
+     int speed = (throttle - 92);  
+     
      if (code == right){
         if (throttle < zero){ 
-          right_motor.write(throttle + 5);
-          delay(turn_dur);
-          right_motor.write(throttle);
+          if(speed(2.67)<top_lmt){
+            left_motor.write(speed*2.67);
+          }
         } else{
-          left_motor.write(throttle - 5);
-          delay(turn_dur);
-          left_motor.write(throttle);
+          right_motor.write(top_lmt-2.67)*speed);
+          left_motor.write(top_limit);
         }
      } else if (code == left){
         if (throttle < zero){ 
-          left_motor.write(throttle + 5);
-          delay(turn_dur);
-          left_motor.write(throttle);
+          if(speed(2.67)<top_lmt){
+            right_motor.write(speed*2.67);
+          }
         } else{
-          right_motor.write(throttle - 5);
-          delay(turn_dur);
-          right_motor.write(throttle);
+          left_motor.write(top_lmt-2.67)*speed);
+          right_motor.write(top_limit);
         }
      }
-
      irrecv.resume();
   }
     
